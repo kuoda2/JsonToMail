@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Data;
 
 namespace JsonToMail
 {
@@ -74,9 +75,32 @@ namespace JsonToMail
         public static List<OfficeTool.MailInfo> GetMailInfos(JArray jarray)
         {
             var result = JsonConvert.DeserializeObject<List<OfficeTool.MailInfo>>(jarray.ToString());
+
+            foreach (var mailInfo in result)
+            {
+                foreach (var kvp in MailTable)
+                {
+                    if (mailInfo.CarbonCopy.Equals(kvp.Key, StringComparison.InvariantCultureIgnoreCase))
+                        mailInfo.CarbonCopy = kvp.Value;
+                }
+            }
             return result;
         }
 
+        private static Dictionary<string, string> MailTable
+        {
+            get
+            {
+                if (mailTable.Count == 0)
+                {
+                    mailTable.Add("Eddie", "eddie_kuo@systemweb.com");
+                    mailTable.Add("Frank", "frank_wu@systemweb.com");
+                }
+                return mailTable;
+            }
+        }
+
         private static Regex regex = new Regex("^【.*】$");
+        private static Dictionary<string, string> mailTable = new Dictionary<string, string>() { };
     }
 }
