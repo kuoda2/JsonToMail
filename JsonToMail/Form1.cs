@@ -17,7 +17,7 @@ namespace JsonToMail
         {
             InitializeComponent();
             var array = JsonHelper.ConvertTo(JsonHelper.ReadJson("D:\\modified\\export.json"),
-                 string.Format(@"{0}\ims_contract_for_instruction.sql", Environment.SpecialFolder.Desktop));
+                 "D:\\modified\\config.json");
 
             JsonHelper.GetMailInfos(array);
             MailInfo mail = new MailInfo() { };

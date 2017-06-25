@@ -44,31 +44,31 @@ namespace JsonToMail
 
         public static JArray ConvertTo(JArray jarray, string configPath)
         {
-            List<KeyValuePair<string, List<string>>> kvps = new List<KeyValuePair<string, List<string>>>();
-
-            kvps.Add(new KeyValuePair<string, List<string>>("Subject", new List<string>() { "#", "【所以我說】", "問題類別" }));
-            kvps.Add(new KeyValuePair<string, List<string>>("Recipient", new List<string>() { "" }));
-            kvps.Add(new KeyValuePair<string, List<string>>("CarbonCopy", new List<string>() { "負責人" }));
-            kvps.Add(new KeyValuePair<string, List<string>>("Content", new List<string>() { "問題描述", "解決歷程" }));
-            JArray result = new JArray();
-            foreach (JObject item in jarray)
+            using (StreamReader r = File.OpenText(configPath))
             {
-                var jo = new JObject();
-                foreach (var kvp in kvps)
+                var jsonText = r.ReadToEnd();
+                Dictionary<string, List<string>> kvps = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(jsonText);
+
+                JArray result = new JArray();
+                foreach (JObject item in jarray)
                 {
-                    string tmpValue = string.Empty;
-                    foreach (var value in kvp.Value)
+                    var jo = new JObject();
+                    foreach (var kvp in kvps)
                     {
-                        if (!regex.IsMatch(value) && item.TryGetValue(value, out JToken va))
-                            tmpValue += item[value].ToString();
-                        else
-                            tmpValue += value;
+                        string tmpValue = string.Empty;
+                        foreach (var value in kvp.Value)
+                        {
+                            if (!regex.IsMatch(value) && item.TryGetValue(value, out JToken va))
+                                tmpValue += item[value].ToString();
+                            else
+                                tmpValue += value;
+                        }
+                        jo.Add(kvp.Key, tmpValue);
                     }
-                    jo.Add(kvp.Key, tmpValue);
+                    result.Add(jo);
                 }
-                result.Add(jo);
+                return result;
             }
-            return result;
         }
 
         public static List<OfficeTool.MailInfo> GetMailInfos(JArray jarray)
