@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using OfficeTool;
 
 namespace JsonToMail
 {
@@ -15,6 +16,11 @@ namespace JsonToMail
         public Form1()
         {
             InitializeComponent();
+            var array = JsonHelper.ConvertTo(JsonHelper.ReadJson("D:\\modified\\export.json"),
+                 string.Format(@"{0}\ims_contract_for_instruction.sql", Environment.SpecialFolder.Desktop));
+
+            JsonHelper.GetMailInfos(array);
+            MailInfo mail = new MailInfo() { };
         }
     }
 }
