@@ -99,5 +99,32 @@ namespace JsonToMail
     {
         public Dictionary<string, List<string>> ColumnMapping;
         public Dictionary<string, string> EmailDictionary;
+        public string SourcePath;
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendFormat("SourcePath:{0}{1}", SourcePath, Environment.NewLine);
+            sb.AppendLine();
+
+            foreach (var emailKvp in EmailDictionary)
+            {
+                sb.AppendFormat("{0}:{1}{2}", emailKvp.Key, emailKvp.Value, Environment.NewLine);
+            }
+            sb.AppendLine();
+
+            foreach (var kvp in ColumnMapping)
+            {
+                sb.AppendLine(kvp.Key);
+                foreach (var value in kvp.Value)
+                {
+                    sb.AppendLine(value);
+                }
+            }
+            sb.AppendLine();
+
+            return sb.ToString();
+        }
     }
 }
