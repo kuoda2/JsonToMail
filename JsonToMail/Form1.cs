@@ -40,16 +40,15 @@ namespace JsonToMail
         public Form1()
         {
             InitializeComponent();
-            Config = JsonHelper.GetConfig("D:\\modified\\config.json");
-            MailInfos = JsonHelper.GetMailInfos(config);
-
-            gridControl1.DataSource = MailInfos;
-
-            me_ConfigInfo.ReadOnly = true;
         }
 
-        private void simpleButton1_Click(object sender, EventArgs e)
+        private void sb_SendMail_Click(object sender, EventArgs e)
         {
+            if (MailInfos == null)
+            {
+                MessageBox.Show("請先匯入資料。");
+                return;
+            }
             bool isSuccessful = true;
             foreach (var mailInfo in MailInfos)
             {
@@ -62,12 +61,47 @@ namespace JsonToMail
 
         private void sb_ImportData_Click(object sender, EventArgs e)
         {
-            MailInfos = JsonHelper.GetMailInfos(JsonHelper.GetConfig("D:\\modified\\config.json"));
+            try
+            {
+                MailInfos = JsonHelper.GetMailInfos(Config);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Format("json檔案格式有誤，請確認。\r\nFile path:{0}\r\n{1}", "D:\\modified\\config.json", ex.Message));
+                return;
+            }
         }
 
         private void UpdateConfigInfo(Config config)
         {
             me_ConfigInfo.Text = config.ToString();
+        }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            try
+            {
+                Config = JsonHelper.GetConfig("D:\\modified\\config.json");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Format("json檔案格式有誤，請確認。\r\nFile path:{0}\r\n{1}", "D:\\modified\\config.json", ex.Message));
+                return;
+            }
+
+            try
+            {
+                MailInfos = JsonHelper.GetMailInfos(Config);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Format("資料來源有誤，請確認。\r\nFile path:{0}\r\n{1}", configPath, ex.Message));
+                return;
+            }
+
+            gridControl1.DataSource = MailInfos;
+
+            me_ConfigInfo.ReadOnly = true;
         }
     }
 }
