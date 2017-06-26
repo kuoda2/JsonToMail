@@ -41,7 +41,12 @@ namespace JsonToMail
                 throw new FileNotFoundException(string.Format("{0} is not found.", path));
         }
 
-        public static JArray ConvertTo(JArray jarray, Config config)
+        private static JArray ConvertTo(Config config)
+        {
+            return ConvertTo(ReadJson(config.SourcePath), config);
+        }
+
+        private static JArray ConvertTo(JArray jarray, Config config)
         {
             JArray result = new JArray();
             foreach (JObject item in jarray)
@@ -64,9 +69,19 @@ namespace JsonToMail
             return result;
         }
 
-        public static List<OfficeTool.MailInfo> GetMailInfos(JArray jarray, Config config)
+        public static IEnumerable<OfficeTool.MailInfo> GetMailInfos(Config config)
         {
-            var result = JsonConvert.DeserializeObject<List<OfficeTool.MailInfo>>(jarray.ToString());
+            return GetMailInfos(ConvertTo(config), config);
+        }
+
+        public static IEnumerable<OfficeTool.MailInfo> GetMailInfos(string sourcePath, Config config)
+        {
+            return GetMailInfos(ConvertTo(ReadJson(sourcePath), config), config);
+        }
+
+        private static IEnumerable<OfficeTool.MailInfo> GetMailInfos(JArray jarray, Config config)
+        {
+            var result = JsonConvert.DeserializeObject<IEnumerable<OfficeTool.MailInfo>>(jarray.ToString());
 
             foreach (var mailInfo in result)
             {

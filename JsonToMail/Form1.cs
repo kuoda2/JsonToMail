@@ -18,11 +18,8 @@ namespace JsonToMail
         public Form1()
         {
             InitializeComponent();
-            var config = JsonHelper.GetConfig("D:\\modified\\config.json");
-            var array = JsonHelper.ConvertTo(JsonHelper.ReadJson("D:\\modified\\export.json"),
-                 config);
-
-            MailInfos = JsonHelper.GetMailInfos(array, config);
+            Config = JsonHelper.GetConfig("D:\\modified\\config.json");
+            MailInfos = JsonHelper.GetMailInfos(config);
 
             gridControl1.DataSource = MailInfos;
         }
