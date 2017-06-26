@@ -16,11 +16,11 @@ namespace JsonToMail
         public Form1()
         {
             InitializeComponent();
+            var config = JsonHelper.GetConfig("D:\\modified\\config.json");
             var array = JsonHelper.ConvertTo(JsonHelper.ReadJson("D:\\modified\\export.json"),
-                 "D:\\modified\\config.json");
+                 config);
 
-            JsonHelper.GetMailInfos(array);
-            MailInfo mail = new MailInfo() { };
+            var mails = JsonHelper.GetMailInfos(array, config);
         }
     }
 }

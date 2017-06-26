@@ -43,42 +43,50 @@ namespace JsonToMail
                 throw new FileNotFoundException(string.Format("{0} is not found.", path));
         }
 
-        public static JArray ConvertTo(JArray jarray, string configPath)
+        public static Config GetConfig(string path)
         {
-            using (StreamReader r = File.OpenText(configPath))
+            if (File.Exists(path))
             {
-                var jsonText = r.ReadToEnd();
-                Dictionary<string, List<string>> kvps = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(jsonText);
-
-                JArray result = new JArray();
-                foreach (JObject item in jarray)
+                using (StreamReader sr = new StreamReader(path))
                 {
-                    var jo = new JObject();
-                    foreach (var kvp in kvps)
-                    {
-                        string tmpValue = string.Empty;
-                        foreach (var value in kvp.Value)
-                        {
-                            if (!regex.IsMatch(value) && item.TryGetValue(value, out JToken va))
-                                tmpValue += item[value].ToString();
-                            else
-                                tmpValue += value;
-                        }
-                        jo.Add(kvp.Key, tmpValue);
-                    }
-                    result.Add(jo);
+                    var result = JsonConvert.DeserializeObject<Config>(sr.ReadToEnd());
+                    return result;
                 }
-                return result;
             }
+            else
+                throw new FileNotFoundException(string.Format("{0} is not found.", path));
         }
 
-        public static List<OfficeTool.MailInfo> GetMailInfos(JArray jarray)
+        public static JArray ConvertTo(JArray jarray, Config config)
+        {
+            JArray result = new JArray();
+            foreach (JObject item in jarray)
+            {
+                var jo = new JObject();
+                foreach (var kvp in config.ColumnMapping)
+                {
+                    string tmpValue = string.Empty;
+                    foreach (var value in kvp.Value)
+                    {
+                        if (!regex.IsMatch(value) && item.TryGetValue(value, out JToken va))
+                            tmpValue += item[value].ToString();
+                        else
+                            tmpValue += value;
+                    }
+                    jo.Add(kvp.Key, tmpValue);
+                }
+                result.Add(jo);
+            }
+            return result;
+        }
+
+        public static List<OfficeTool.MailInfo> GetMailInfos(JArray jarray, Config config)
         {
             var result = JsonConvert.DeserializeObject<List<OfficeTool.MailInfo>>(jarray.ToString());
 
             foreach (var mailInfo in result)
             {
-                foreach (var kvp in MailTable)
+                foreach (var kvp in config.EmailDictionary)
                 {
                     if (mailInfo.CarbonCopy.Equals(kvp.Key, StringComparison.InvariantCultureIgnoreCase))
                         mailInfo.CarbonCopy = kvp.Value;
@@ -87,20 +95,12 @@ namespace JsonToMail
             return result;
         }
 
-        private static Dictionary<string, string> MailTable
-        {
-            get
-            {
-                if (mailTable.Count == 0)
-                {
-                    mailTable.Add("Eddie", "eddie_kuo@systemweb.com");
-                    mailTable.Add("Frank", "frank_wu@systemweb.com");
-                }
-                return mailTable;
-            }
-        }
-
         private static Regex regex = new Regex("^【.*】$");
-        private static Dictionary<string, string> mailTable = new Dictionary<string, string>() { };
+    }
+
+    public class Config
+    {
+        public Dictionary<string, List<string>> ColumnMapping;
+        public Dictionary<string, string> EmailDictionary;
     }
 }
