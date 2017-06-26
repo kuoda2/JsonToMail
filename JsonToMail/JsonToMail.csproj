@@ -42,8 +42,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\UpdateHelper\UpdateHelper\bin\Debug\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="OfficeTool">
-      <HintPath>..\..\IMS_PRU_Git\SOURCE\bin\OfficeTool.dll</HintPath>
+    <Reference Include="OfficeTool, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\IMS_PRU_Git\SOURCE\system\OfficeTool\obj\Debug\OfficeTool.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
