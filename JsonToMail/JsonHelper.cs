@@ -105,24 +105,37 @@ namespace JsonToMail
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendFormat("SourcePath:{0}{1}", SourcePath, Environment.NewLine);
+            #region 匯入資料來源的位置
+
+            sb.AppendFormat("SourcePath:{0}", SourcePath).AppendLine();
             sb.AppendLine();
+
+            #endregion 匯入資料來源的位置
+
+            #region Email 對照表
 
             foreach (var emailKvp in EmailDictionary)
             {
-                sb.AppendFormat("{0}:{1}{2}", emailKvp.Key, emailKvp.Value, Environment.NewLine);
+                sb.AppendFormat("{0}:{1}", emailKvp.Key, emailKvp.Value).AppendLine();
             }
             sb.AppendLine();
+
+            #endregion Email 對照表
+
+            #region 欄位對照表
 
             foreach (var kvp in ColumnMapping)
             {
                 sb.AppendLine(kvp.Key);
                 foreach (var value in kvp.Value)
                 {
+                    sb.Append("\t");
                     sb.AppendLine(value);
                 }
             }
             sb.AppendLine();
+
+            #endregion 欄位對照表
 
             return sb.ToString();
         }
