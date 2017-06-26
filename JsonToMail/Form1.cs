@@ -13,6 +13,8 @@ namespace JsonToMail
 {
     public partial class Form1 : Form
     {
+        private readonly string configPath = System.IO.Directory.GetCurrentDirectory() + @"/config.json";
+
         private Config config;
 
         private Config Config
@@ -67,7 +69,7 @@ namespace JsonToMail
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format("json檔案格式有誤，請確認。\r\nFile path:{0}\r\n{1}", "D:\\modified\\config.json", ex.Message));
+                MessageBox.Show(string.Format("json檔案格式有誤，請確認。\r\nFile path:{0}\r\n{1}", configPath, ex.Message));
                 return;
             }
         }
@@ -81,11 +83,11 @@ namespace JsonToMail
         {
             try
             {
-                Config = JsonHelper.GetConfig("D:\\modified\\config.json");
+                Config = JsonHelper.GetConfig(configPath);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format("json檔案格式有誤，請確認。\r\nFile path:{0}\r\n{1}", "D:\\modified\\config.json", ex.Message));
+                MessageBox.Show(string.Format("json檔案格式有誤，請確認。\r\nFile path:{0}\r\n{1}", configPath, ex.Message));
                 return;
             }
 
