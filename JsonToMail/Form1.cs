@@ -35,7 +35,8 @@ namespace JsonToMail
             set
             {
                 mailInfos = value;
-                gridControl1.DataSource = mailInfos;
+                dataGridView1.DataSource = mailInfos;
+                dataGridView1.AutoResizeColumns();
             }
         }
 
@@ -44,7 +45,7 @@ namespace JsonToMail
             InitializeComponent();
         }
 
-        private void sb_SendMail_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)
         {
             if (MailInfos == null)
             {
@@ -61,7 +62,7 @@ namespace JsonToMail
                 MessageBox.Show("已全數寄信成功，請到寄件備份查看");
         }
 
-        private void sb_ImportData_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
             try
             {
@@ -76,7 +77,7 @@ namespace JsonToMail
 
         private void UpdateConfigInfo(Config config)
         {
-            me_ConfigInfo.Text = config.ToString();
+            rtb_ConfigInfo.Text = config.ToString();
         }
 
         private void Form1_Shown(object sender, EventArgs e)
@@ -101,9 +102,10 @@ namespace JsonToMail
                 return;
             }
 
-            gridControl1.DataSource = MailInfos;
+            dataGridView1.DataSource = MailInfos;
+            dataGridView1.AutoResizeColumns();
 
-            me_ConfigInfo.ReadOnly = true;
+            rtb_ConfigInfo.ReadOnly = true;
         }
     }
 }
