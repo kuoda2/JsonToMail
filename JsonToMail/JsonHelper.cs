@@ -13,22 +13,6 @@ namespace JsonToMail
 {
     public static class JsonHelper
     {
-        private static string jsonSrc =
-@"[{
-    ""d"": ""2015-01-01T00:00:00Z"",
-    ""n"": 32767,
-    ""s"": ""darkthread"",
-    ""a"": [ 1,2,3,4,5 ],
-    ""t"": ""kerker""
-},
-{
-    ""d"": ""2011-01-01T00:00:00Z"",
-    ""n"": 111111,
-    ""s"": ""eddie"",
-    ""a"": [ 1,2,3,4,5 ],
-    ""t"": ""kerker2""
-}]";
-
         public static JArray ReadJson(string path)
         {
             if (File.Exists(path))
@@ -68,7 +52,7 @@ namespace JsonToMail
                     string tmpValue = string.Empty;
                     foreach (var value in kvp.Value)
                     {
-                        if (!regex.IsMatch(value) && item.TryGetValue(value, out JToken va))
+                        if (item.TryGetValue(value, out JToken va))
                             tmpValue += item[value].ToString();
                         else
                             tmpValue += value;
@@ -94,8 +78,6 @@ namespace JsonToMail
             }
             return result;
         }
-
-        private static Regex regex = new Regex("^【.*】$");
     }
 
     public class Config
