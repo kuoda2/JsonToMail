@@ -13,6 +13,8 @@ namespace JsonToMail
 {
     public partial class Form1 : Form
     {
+        private List<MailInfo> MailInfos;
+
         public Form1()
         {
             InitializeComponent();
@@ -20,7 +22,17 @@ namespace JsonToMail
             var array = JsonHelper.ConvertTo(JsonHelper.ReadJson("D:\\modified\\export.json"),
                  config);
 
-            var mails = JsonHelper.GetMailInfos(array, config);
+            MailInfos = JsonHelper.GetMailInfos(array, config);
+
+            gridControl1.DataSource = MailInfos;
+        }
+
+        private void simpleButton1_Click(object sender, EventArgs e)
+        {
+            foreach (var mailInfo in MailInfos)
+            {
+                OutLookTool.ComposeMail(mailInfo, true);
+            }
         }
     }
 }
